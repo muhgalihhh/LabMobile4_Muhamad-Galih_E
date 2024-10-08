@@ -5,6 +5,7 @@ import 'package:frontend_toko/model/produk.dart';
 import 'package:frontend_toko/ui/login_page.dart';
 import 'package:frontend_toko/ui/produk_detail.dart';
 import 'package:frontend_toko/ui/produk_form.dart';
+import 'package:frontend_toko/widget/success_dialog.dart';
 
 class ProdukPage extends StatefulWidget {
   const ProdukPage({Key? key}) : super(key: key);
@@ -40,7 +41,14 @@ class _ProdukPageState extends State<ProdukPage> {
                 await LogoutBloc.logout().then((value) => {
                       Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => LoginPage()),
-                          (route) => false)
+                          (route) => false),
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) =>
+                              const SuccessDialog(
+                                description: "Logout berhasil",
+                              ))
                     });
               },
             )

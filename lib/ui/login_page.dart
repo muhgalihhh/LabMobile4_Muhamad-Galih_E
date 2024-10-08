@@ -3,6 +3,7 @@ import 'package:frontend_toko/bloc/login_bloc.dart';
 import 'package:frontend_toko/helpers/user_info.dart';
 import 'package:frontend_toko/ui/produk_page.dart';
 import 'package:frontend_toko/ui/registrasi_page.dart';
+import 'package:frontend_toko/widget/success_dialog.dart';
 import 'package:frontend_toko/widget/warning_dialog.dart';
 
 class LoginPage extends StatefulWidget {
@@ -104,6 +105,12 @@ class _LoginPageState extends State<LoginPage> {
         await UserInfo().setUserID(int.parse(value.userID.toString()));
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const ProdukPage()));
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => const SuccessDialog(
+                  description: "Login berhasil",
+                ));
       } else {
         showDialog(
             context: context,

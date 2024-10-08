@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_toko/bloc/produk_bloc.dart';
 import 'package:frontend_toko/model/produk.dart';
 import 'package:frontend_toko/ui/produk_page.dart';
+import 'package:frontend_toko/widget/success_dialog.dart';
 import 'package:frontend_toko/widget/warning_dialog.dart';
 
 // ignore: must_be_immutable
@@ -141,6 +142,11 @@ class _ProdukFormState extends State<ProdukForm> {
     ProdukBloc.addProduk(produk: createProduk).then((value) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => const ProdukPage()));
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => const SuccessDialog(
+                description: "Data berhasil disimpan",
+              ));
     }, onError: (error) {
       showDialog(
           context: context,
@@ -164,6 +170,11 @@ class _ProdukFormState extends State<ProdukForm> {
     ProdukBloc.updateProduk(produk: updateProduk).then((value) {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => const ProdukPage()));
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => const SuccessDialog(
+                description: "Data berhasil diubah",
+              ));
     }, onError: (error) {
       showDialog(
           context: context,
