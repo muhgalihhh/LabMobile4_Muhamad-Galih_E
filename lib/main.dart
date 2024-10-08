@@ -1,21 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_toko/helpers/user_info.dart';
+import 'package:frontend_toko/ui/login_page.dart';
 import 'package:frontend_toko/ui/produk_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
-  // This widget is the root of your application.
+class _MyAppState extends State<MyApp> {
+  Widget page = const CircularProgressIndicator();
+  @override
+  void initState() {
+    super.initState();
+    isLogin();
+  }
+
+  void isLogin() async {
+    var token = await UserInfo().getToken();
+    if (token != null) {
+      setState(() {
+        page = const ProdukPage();
+      });
+    } else {
+      setState(() {
+        page = const LoginPage();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: 'Toko Kita',
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      // home: const RegistrasiPage(),
-      home: ProdukPage(),
+      home: page,
     );
   }
 }

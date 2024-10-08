@@ -1,54 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:frontend_toko/bloc/registrasi_bloc.dart';
+import 'package:frontend_toko/widget/success_dialog.dart';
+import 'package:frontend_toko/widget/warning_dialog.dart';
 
 class RegistrasiPage extends StatefulWidget {
-  const RegistrasiPage({super.key});
+  const RegistrasiPage({Key? key}) : super(key: key);
 
   @override
-  State<RegistrasiPage> createState() => _RegistrasiPageState();
+  _RegistrasiPageState createState() => _RegistrasiPageState();
 }
 
-class _RegistrasiPageState extends State<RegistrasiPage>
-    with SingleTickerProviderStateMixin {
+class _RegistrasiPageState extends State<RegistrasiPage> {
   final _formKey = GlobalKey<FormState>();
-  final _namaTextBoxController = TextEditingController();
-  final _emailTextBoxController = TextEditingController();
-  final _passwordTextBoxController = TextEditingController();
-  final _confirmPasswordTextBoxController = TextEditingController();
+  bool _isLoading = false;
 
-  bool _isNamaFocused = false;
-  bool _isEmailFocused = false;
-  bool _isPasswordFocused = false;
-  bool _isConfirmPasswordFocused = false;
-
+  final _namaTextboxController = TextEditingController();
+  final _emailTextboxController = TextEditingController();
+  final _passwordTextboxController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          "Registrasi Galih",
-          style: GoogleFonts.poppins(color: Colors.white),
-        ),
-        backgroundColor: Colors.black,
+        title: const Text("Registrasi"),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _namaTextField(),
-                const SizedBox(height: 20),
                 _emailTextField(),
-                const SizedBox(height: 20),
                 _passwordTextField(),
-                const SizedBox(height: 20),
                 _passwordKonfirmasiTextField(),
-                const SizedBox(height: 30),
-                _buttonRegistrasi(),
+                _buttonRegistrasi()
               ],
             ),
           ),
@@ -57,187 +44,118 @@ class _RegistrasiPageState extends State<RegistrasiPage>
     );
   }
 
-  // Membuat TextBox untuk nama dengan animasi pada border
+//Membuat Textbox Nama
   Widget _namaTextField() {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        setState(() {
-          _isNamaFocused = hasFocus;
-        });
+    return TextFormField(
+      decoration: const InputDecoration(labelText: "Nama"),
+      keyboardType: TextInputType.text,
+      controller: _namaTextboxController,
+      validator: (value) {
+        if (value!.length < 3) {
+          return "Nama harus diisi minimal 3 karakter";
+        }
+        return null;
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: _isNamaFocused ? Colors.black : Colors.grey,
-            width: _isNamaFocused ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Nama',
-            hintText: 'Masukkan nama',
-            border: InputBorder.none,
-            labelStyle: GoogleFonts.poppins(color: Colors.black),
-            hintStyle: GoogleFonts.poppins(color: Colors.grey),
-          ),
-          controller: _namaTextBoxController,
-          validator: (value) {
-            if (value!.length < 3) {
-              return 'Nama minimal 3 karakter';
-            }
-            return null;
-          },
-        ),
-      ),
     );
   }
 
-  // Membuat TextBox untuk email dengan animasi pada border
+  //Membuat Textbox email
   Widget _emailTextField() {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        setState(() {
-          _isEmailFocused = hasFocus;
-        });
+    return TextFormField(
+      decoration: const InputDecoration(labelText: "Email"),
+      keyboardType: TextInputType.emailAddress,
+      controller: _emailTextboxController,
+      validator: (value) {
+        //validasi harus diisi
+        if (value!.isEmpty) {
+          return 'Email harus diisi';
+        }
+        //validasi email
+        Pattern pattern =
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+        RegExp regex = RegExp(pattern.toString());
+        if (!regex.hasMatch(value)) {
+          return "Email tidak valid";
+        }
+        return null;
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: _isEmailFocused ? Colors.black : Colors.grey,
-            width: _isEmailFocused ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Email',
-            hintText: 'Masukkan email',
-            border: InputBorder.none,
-            labelStyle: GoogleFonts.poppins(color: Colors.black),
-            hintStyle: GoogleFonts.poppins(color: Colors.grey),
-          ),
-          keyboardType: TextInputType.emailAddress,
-          controller: _emailTextBoxController,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return 'Email tidak boleh kosong';
-            }
-            Pattern pattern =
-                r'^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$';
-            RegExp regex = RegExp(pattern.toString());
-            if (!regex.hasMatch(value)) {
-              return 'Email tidak valid';
-            }
-            return null;
-          },
-        ),
-      ),
     );
   }
 
-  // Membuat TextBox untuk password dengan animasi pada border
+//Membuat Textbox password
   Widget _passwordTextField() {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        setState(() {
-          _isPasswordFocused = hasFocus;
-        });
+    return TextFormField(
+      decoration: const InputDecoration(labelText: "Password"),
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      controller: _passwordTextboxController,
+      validator: (value) {
+        //jika karakter yang dimasukkan kurang dari 6 karakter
+        if (value!.length < 6) {
+          return "Password harus diisi minimal 6 karakter";
+        }
+        return null;
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: _isPasswordFocused ? Colors.black : Colors.grey,
-            width: _isPasswordFocused ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Password',
-            hintText: 'Masukkan password',
-            border: InputBorder.none,
-            labelStyle: GoogleFonts.poppins(color: Colors.black),
-            hintStyle: GoogleFonts.poppins(color: Colors.grey),
-          ),
-          obscureText: true,
-          controller: _passwordTextBoxController,
-          validator: (value) {
-            if (value!.length < 6) {
-              return 'Password minimal 6 karakter';
-            }
-            return null;
-          },
-        ),
-      ),
     );
   }
 
-  // Membuat TextBox untuk konfirmasi password dengan animasi pada border
+//membuat textbox Konfirmasi Password
   Widget _passwordKonfirmasiTextField() {
-    return Focus(
-      onFocusChange: (hasFocus) {
-        setState(() {
-          _isConfirmPasswordFocused = hasFocus;
-        });
+    return TextFormField(
+      decoration: const InputDecoration(labelText: "Konfirmasi Password"),
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      validator: (value) {
+        //jika inputan tidak sama dengan password
+        if (value != _passwordTextboxController.text) {
+          return "Konfirmasi Password tidak sama";
+        }
+        return null;
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: _isConfirmPasswordFocused ? Colors.black : Colors.grey,
-            width: _isConfirmPasswordFocused ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: TextFormField(
-          decoration: InputDecoration(
-            labelText: 'Konfirmasi Password',
-            hintText: 'Masukkan konfirmasi password',
-            border: InputBorder.none,
-            labelStyle: GoogleFonts.poppins(color: Colors.black),
-            hintStyle: GoogleFonts.poppins(color: Colors.grey),
-          ),
-          obscureText: true,
-          controller: _confirmPasswordTextBoxController,
-          validator: (value) {
-            if (value != _passwordTextBoxController.text) {
-              return 'Password tidak sama';
-            }
-            return null;
-          },
-        ),
-      ),
     );
   }
 
-  // Membuat Button Registrasi minimalis
+//Membuat Tombol Registrasi
   Widget _buttonRegistrasi() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: Text(
-          'Registrasi',
-          style: GoogleFonts.poppins(color: Colors.white),
-        ),
+    return ElevatedButton(
+        child: const Text("Registrasi"),
         onPressed: () {
-          var valid = _formKey.currentState!.validate();
-        },
-      ),
-    );
+          var validate = _formKey.currentState!.validate();
+          if (validate) {
+            if (!_isLoading) _submit();
+          }
+        });
+  }
+
+  void _submit() {
+    _formKey.currentState!.save();
+    setState(() {
+      _isLoading = true;
+    });
+    RegistrasiBloc.registrasi(
+            nama: _namaTextboxController.text,
+            email: _emailTextboxController.text,
+            password: _passwordTextboxController.text)
+        .then((value) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => SuccessDialog(
+                description: "Registrasi berhasil, silahkan login",
+                okClick: () {
+                  Navigator.pop(context);
+                },
+              ));
+    }, onError: (error) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => const WarningDialog(
+                description: "Registrasi gagal, silahkan coba lagi",
+              ));
+    });
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
