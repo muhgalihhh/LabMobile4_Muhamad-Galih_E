@@ -16,6 +16,17 @@
   </tr>
 </table>
 
-## Hasil
+
+
+## <a id="proses"></a>Penjelasan Untuk Tiap Proses
+1. [Proses Register](#register)
+2. [Proses Login](#login)
+3. [Proses Tambah Produk](#tambah)
+4. [Proses Tampil Produk](#tampil)
+5. [Proses Ubah Produk](#ubah)
+6. [Proses Hapus Produk](#hapus)
+7. [Proses Detail Produk](#detail)
+8. [Proses Logout](#logout)
+
 
 
